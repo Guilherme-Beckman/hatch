@@ -6,7 +6,7 @@
  *
  * Providers (no paid API required):
  *   • pollinations  [default] — Pollinations.AI via FLUX, no API key needed
- *   • huggingface             — HF Inference API (FLUX.1-schnell), requires HF_TOKEN in .env
+ *   • huggingface             — HF Router API (FLUX.1-schnell), requires HF_TOKEN in .env
  *   • gemini                  — Google Gemini 2.5 Flash Image, 500 img/day free, requires GEMINI_API_KEY
  *                               Get free key at: https://aistudio.google.com/apikey
  *
@@ -188,7 +188,7 @@ async function generateHuggingFace(prompt, destPath) {
   if (!token) throw new Error('HF_TOKEN not set in .env — required for --provider huggingface');
   const buf = await postJson(
     {
-      hostname: 'api-inference.huggingface.co',
+      hostname: 'router.huggingface.co',
       path: '/models/black-forest-labs/FLUX.1-schnell',
       headers: { Authorization: `Bearer ${token}` },
       timeout: 120_000,
