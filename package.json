@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "sprites:setup": "node scripts/setup-placeholders.mjs",
+    "sprites:generate": "node scripts/generate-sprites.mjs"
   },
   "prettier": {
     "printWidth": 100,
