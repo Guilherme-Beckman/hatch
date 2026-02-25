@@ -15,7 +15,7 @@ import { UserProfile } from '../../core/models/user.model';
             <img
               class="avatar"
               [src]="user.photoURL || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'U')"
-              [alt]="user.displayName || 'Usuário'"
+              [alt]="user.displayName || 'User'"
             />
             <div class="avatar-ring"></div>
           </div>
@@ -29,18 +29,18 @@ import { UserProfile } from '../../core/models/user.model';
           <div class="stat-card">
             <span class="stat-icon">⏱️</span>
             <span class="stat-value">{{ formatHours(profile()!.totalFocusMinutes) }}</span>
-            <span class="stat-label">horas focadas</span>
+            <span class="stat-label">focus hours</span>
           </div>
           <div class="stat-card">
             <span class="stat-icon">🔥</span>
             <span class="stat-value">{{ profile()!.totalSessions }}</span>
-            <span class="stat-label">sessões completas</span>
+            <span class="stat-label">completed sessions</span>
           </div>
         </div>
       }
 
       <div class="achievements-section">
-        <h3 class="section-label">Conquistas</h3>
+        <h3 class="section-label">Achievements</h3>
         <div class="achievements-list">
           @for (a of achievements(); track a.id; let i = $index) {
             <div
@@ -66,11 +66,11 @@ import { UserProfile } from '../../core/models/user.model';
       <div class="actions-section">
         @if (auth.isAdmin()) {
           <button class="btn-admin" (click)="router.navigate(['/admin'])">
-            ⚡ Painel Admin
+            ⚡ Admin Panel
           </button>
         }
         <button class="btn-signout" (click)="auth.signOut()">
-          Sair da conta
+          Sign out
         </button>
       </div>
     </div>
@@ -266,12 +266,12 @@ export class PerfilComponent implements OnInit {
 
   readonly profile = signal<UserProfile | null>(null);
   readonly achievements = signal([
-    { id: 'first-session', icon: '🌱', name: 'Primeira Semente', description: 'Complete sua primeira sessão de foco', earned: false },
-    { id: 'ten-sessions', icon: '🔥', name: 'Em Chamas', description: 'Complete 10 sessões', earned: false },
-    { id: 'first-rare', icon: '💎', name: 'Achado Raro', description: 'Choque seu primeiro ovo raro', earned: false },
-    { id: 'first-legendary', icon: '✨', name: 'Lenda Viva', description: 'Choque um ovo lendário', earned: false },
-    { id: 'ten-hours', icon: '⏰', name: 'Focado de Verdade', description: 'Acumule 10 horas de foco', earned: false },
-    { id: 'full-flock', icon: '🐦', name: 'Revoada Completa', description: 'Colecione 8 pássaros diferentes', earned: false },
+    { id: 'first-session', icon: '🌱', name: 'First Seed', description: 'Complete your first focus session', earned: false },
+    { id: 'ten-sessions', icon: '🔥', name: 'On Fire', description: 'Complete 10 sessions', earned: false },
+    { id: 'first-rare', icon: '💎', name: 'Rare Find', description: 'Hatch your first rare egg', earned: false },
+    { id: 'first-legendary', icon: '✨', name: 'Living Legend', description: 'Hatch a legendary egg', earned: false },
+    { id: 'ten-hours', icon: '⏰', name: 'Deep Focus', description: 'Accumulate 10 hours of focus', earned: false },
+    { id: 'full-flock', icon: '🐦', name: 'Full Flock', description: 'Collect 8 different birds', earned: false },
   ]);
 
   ngOnInit(): void {

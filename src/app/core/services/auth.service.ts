@@ -62,7 +62,7 @@ export class AuthService {
     if (!snap.exists()) {
       const profile: UserProfile = {
         uid: user.uid,
-        displayName: user.displayName ?? 'Pássaro Anônimo',
+        displayName: user.displayName ?? 'Anonymous Bird',
         email: user.email ?? '',
         photoURL: user.photoURL ?? '',
         totalFocusMinutes: 0,

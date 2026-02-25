@@ -14,10 +14,10 @@ import { Router } from '@angular/router';
     <div class="incubadora-screen">
       <header class="screen-header">
         <h1 class="screen-title">Incubadora</h1>
-        <p class="screen-subtitle">{{ eggs().length }} ovo{{ eggs().length !== 1 ? 's' : '' }} aguardando</p>
+        <p class="screen-subtitle">{{ eggs().length }} egg{{ eggs().length !== 1 ? 's' : '' }} waiting</p>
         @if (auth.isAdmin() && eggs().length > 0) {
           <button class="btn-admin-hatch" (click)="adminHatchAll()" [disabled]="hatchingAll()">
-            {{ hatchingAll() ? '⏳ Chocando...' : '⚡ Chocar Tudo (Admin)' }}
+            {{ hatchingAll() ? '⏳ Hatching...' : '⚡ Hatch All (Admin)' }}
           </button>
         }
       </header>
@@ -27,8 +27,8 @@ import { Router } from '@angular/router';
           <div class="empty-icon-wrapper">
             <span class="empty-emoji">🥚</span>
           </div>
-          <h3 class="empty-title">Nenhum ovo ainda</h3>
-          <p class="empty-body">Complete uma sessão de foco para ganhar ovos!</p>
+          <h3 class="empty-title">No eggs yet</h3>
+          <p class="empty-body">Complete a focus session to earn eggs!</p>
         </div>
       } @else {
         <div class="eggs-list">
@@ -51,7 +51,7 @@ import { Router } from '@angular/router';
                 </div>
                 <div class="egg-bird-name">{{ getBirdName(egg) }}</div>
                 @if (isReady(egg)) {
-                  <div class="egg-countdown ready">Pronto para chocar!</div>
+                  <div class="egg-countdown ready">Ready to hatch!</div>
                 } @else {
                   <div class="egg-countdown">{{ getCountdown(egg) }}</div>
                 }
@@ -63,16 +63,16 @@ import { Router } from '@angular/router';
                     (click)="hatch(egg)"
                     [disabled]="hatching() === egg.id"
                   >
-                    {{ hatching() === egg.id ? '...' : '🐣 Chocar' }}
+                    {{ hatching() === egg.id ? '...' : '🐣 Hatch' }}
                   </button>
                 } @else {
                   <button
                     class="btn-ad"
                     (click)="watchAd(egg)"
                     [disabled]="watchingAd() === egg.id"
-                    title="Assistir anúncio para acelerar"
+                    title="Watch an ad to speed up"
                   >
-                    {{ watchingAd() === egg.id ? '⏳' : '📺 Acelerar' }}
+                    {{ watchingAd() === egg.id ? '⏳' : '📺 Speed Up' }}
                   </button>
                 }
               </div>
@@ -87,7 +87,7 @@ import { Router } from '@angular/router';
           <div class="modal hatch-modal" (click)="$event.stopPropagation()">
             <div class="hatch-confetti">🎊</div>
             <div class="hatch-bird-emoji">🐦</div>
-            <h2 class="hatch-title">Nasceu!</h2>
+            <h2 class="hatch-title">It hatched!</h2>
             <p class="hatch-bird-name">{{ hatchedBird()!.name }}</p>
             <p class="hatch-rarity" [style.color]="getRarityColorById(hatchedBird()!.rarity)">
               {{ getRarityLabelById(hatchedBird()!.rarity) }}
@@ -95,7 +95,7 @@ import { Router } from '@angular/router';
             <p class="hatch-species">{{ hatchedBird()!.species }}</p>
             <p class="hatch-desc">{{ hatchedBird()!.description }}</p>
             <button class="btn-primary" (click)="hatchedBird.set(null)">
-              🐦 Ver Aviário
+              🐦 View Aviary
             </button>
           </div>
         </div>
@@ -375,11 +375,11 @@ export class IncubadoraComponent implements OnInit, OnDestroy {
 
   getCountdown(egg: Egg): string {
     const diff = egg.hatchAt.getTime() - Date.now();
-    if (diff <= 0) return 'Pronto!';
+    if (diff <= 0) return 'Ready to hatch!';
     const h = Math.floor(diff / 3_600_000);
     const m = Math.floor((diff % 3_600_000) / 60_000);
-    if (h > 0) return `${h}h ${m}min restantes`;
-    return `${m}min restantes`;
+    if (h > 0) return `${h}h ${m}min left`;
+    return `${m}min left`;
   }
 
   getEggEmoji(egg: Egg): string {
@@ -394,7 +394,7 @@ export class IncubadoraComponent implements OnInit, OnDestroy {
   getRarityColorById(r: string): string { return RARITY_CONFIG[r as keyof typeof RARITY_CONFIG]?.color ?? '#888'; }
 
   getBirdName(egg: Egg): string {
-    return BIRDS.find(b => b.id === egg.birdId)?.name ?? 'Pássaro Desconhecido';
+    return BIRDS.find(b => b.id === egg.birdId)?.name ?? 'Unknown Bird';
   }
 
   async hatch(egg: Egg): Promise<void> {

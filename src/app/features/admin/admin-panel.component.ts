@@ -14,14 +14,14 @@ import { Rarity } from '../../core/models/bird.model';
   template: `
     <div class="admin-screen">
       <header class="admin-header">
-        <button class="btn-back" (click)="router.navigate(['/perfil'])">← Voltar</button>
-        <h1 class="admin-title">⚡ Painel Admin</h1>
+        <button class="btn-back" (click)="router.navigate(['/perfil'])">← Back</button>
+        <h1 class="admin-title">⚡ Admin Panel</h1>
         <p class="admin-sub">{{ auth.currentUser()?.email }}</p>
       </header>
 
       @if (!auth.isAdmin()) {
         <div class="no-access">
-          <p>Acesso negado.</p>
+          <p>Access denied.</p>
         </div>
       } @else {
 
@@ -30,20 +30,20 @@ import { Rarity } from '../../core/models/bird.model';
           <h2 class="section-title">⏱️ Timer</h2>
           <div class="action-row">
             <div class="action-info">
-              <span class="action-label">Estado atual</span>
+              <span class="action-label">Current state</span>
               <span class="action-desc">{{ timerState() }}</span>
             </div>
             <button class="btn-action" (click)="skipTimer()" [disabled]="timerState() === 'idle' || timerState() === 'finished'">
-              ⚡ Pular
+              ⚡ Skip
             </button>
           </div>
         </section>
 
         <!-- Gerar Ovos -->
         <section class="admin-section">
-          <h2 class="section-title">🥚 Gerar Ovos</h2>
+          <h2 class="section-title">🥚 Generate Eggs</h2>
           <div class="form-group">
-            <label class="form-label">Quantidade</label>
+            <label class="form-label">Quantity</label>
             <div class="count-row">
               @for (n of [1,2,3,5]; track n) {
                 <button class="btn-chip" [class.selected]="eggCount() === n" (click)="eggCount.set(n)">{{ n }}</button>
@@ -51,7 +51,7 @@ import { Rarity } from '../../core/models/bird.model';
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Raridade</label>
+            <label class="form-label">Rarity</label>
             <div class="rarity-row">
               @for (r of rarities; track r.id) {
                 <button class="btn-chip" [class.selected]="selectedRarity() === r.id" (click)="selectedRarity.set(r.id)" [style.border-color]="r.color">
@@ -61,7 +61,7 @@ import { Rarity } from '../../core/models/bird.model';
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Alimento</label>
+            <label class="form-label">Food</label>
             <div class="food-row">
               @for (f of foods; track f.id) {
                 <button class="btn-chip" [class.selected]="selectedFood() === f.id" (click)="selectedFood.set(f.id)">
@@ -71,7 +71,7 @@ import { Rarity } from '../../core/models/bird.model';
             </div>
           </div>
           <button class="btn-primary" (click)="generateEggs()" [disabled]="generating()">
-            {{ generating() ? '⏳ Gerando...' : '🥚 Gerar ' + eggCount() + ' ovo(s)' }}
+            {{ generating() ? '⏳ Generating...' : '🥚 Generate ' + eggCount() + ' egg(s)' }}
           </button>
           @if (generateMsg()) {
             <p class="success-msg">{{ generateMsg() }}</p>
@@ -80,10 +80,10 @@ import { Rarity } from '../../core/models/bird.model';
 
         <!-- Chocar Ovos -->
         <section class="admin-section">
-          <h2 class="section-title">🐣 Chocar Ovos</h2>
-          <p class="section-desc">Choca todos os ovos pendentes e manda para o aviário.</p>
+          <h2 class="section-title">🐣 Hatch Eggs</h2>
+          <p class="section-desc">Hatches all pending eggs and sends them to the aviary.</p>
           <button class="btn-warning" (click)="hatchAll()" [disabled]="hatchingAll()">
-            {{ hatchingAll() ? '⏳ Chocando...' : '🐣 Chocar Todos' }}
+            {{ hatchingAll() ? '⏳ Hatching...' : '🐣 Hatch All' }}
           </button>
           @if (hatchMsg()) {
             <p class="success-msg">{{ hatchMsg() }}</p>
@@ -92,10 +92,10 @@ import { Rarity } from '../../core/models/bird.model';
 
         <!-- Reset -->
         <section class="admin-section danger-section">
-          <h2 class="section-title">🗑️ Resetar Stats</h2>
-          <p class="section-desc">Zera totalSessions e totalFocusMinutes do perfil.</p>
+          <h2 class="section-title">🗑️ Reset Stats</h2>
+          <p class="section-desc">Resets totalSessions and totalFocusMinutes on the profile.</p>
           <button class="btn-danger" (click)="resetStats()" [disabled]="resetting()">
-            {{ resetting() ? '⏳ Resetando...' : '🗑️ Resetar Stats' }}
+            {{ resetting() ? '⏳ Resetting...' : '🗑️ Reset Stats' }}
           </button>
           @if (resetMsg()) {
             <p class="success-msg">{{ resetMsg() }}</p>
@@ -239,10 +239,10 @@ export class AdminPanelComponent {
 
   readonly foods = FOODS;
   readonly rarities: { id: Rarity; label: string; color: string }[] = [
-    { id: 'comum', label: 'Comum', color: '#888' },
-    { id: 'incomum', label: 'Incomum', color: '#3B82F6' },
-    { id: 'raro', label: 'Raro', color: '#8B5CF6' },
-    { id: 'lendario', label: 'Lendário', color: '#F59E0B' },
+    { id: 'comum', label: 'Common', color: '#888' },
+    { id: 'incomum', label: 'Uncommon', color: '#3B82F6' },
+    { id: 'raro', label: 'Rare', color: '#8B5CF6' },
+    { id: 'lendario', label: 'Legendary', color: '#F59E0B' },
   ];
 
   readonly eggCount = signal(1);
@@ -270,7 +270,7 @@ export class AdminPanelComponent {
     this.generateMsg.set('');
     try {
       await this.db.adminGenerateEggs(uid, this.eggCount(), this.selectedFood(), this.selectedRarity());
-      this.generateMsg.set(`✓ ${this.eggCount()} ovo(s) gerado(s) na incubadora!`);
+      this.generateMsg.set(`✓ ${this.eggCount()} egg(s) added to incubator!`);
       setTimeout(() => this.generateMsg.set(''), 3000);
     } finally {
       this.generating.set(false);
@@ -284,7 +284,7 @@ export class AdminPanelComponent {
     this.hatchMsg.set('');
     try {
       await this.db.adminHatchAllEggs(uid);
-      this.hatchMsg.set('✓ Todos os ovos chocados! Veja o aviário.');
+      this.hatchMsg.set('✓ All eggs hatched! Check the aviary.');
       setTimeout(() => this.hatchMsg.set(''), 3000);
     } finally {
       this.hatchingAll.set(false);
@@ -298,7 +298,7 @@ export class AdminPanelComponent {
     this.resetMsg.set('');
     try {
       await this.db.adminResetStats(uid);
-      this.resetMsg.set('✓ Stats resetados!');
+      this.resetMsg.set('✓ Stats reset!');
       setTimeout(() => this.resetMsg.set(''), 3000);
     } finally {
       this.resetting.set(false);
