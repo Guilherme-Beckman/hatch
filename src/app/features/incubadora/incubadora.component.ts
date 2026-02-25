@@ -4,6 +4,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { Egg } from '../../core/models/egg.model';
 import { BIRDS, RARITY_CONFIG } from '../../core/models/bird.model';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-incubadora',
@@ -14,6 +15,11 @@ import { Subscription } from 'rxjs';
       <header class="screen-header">
         <h1 class="screen-title">Incubadora</h1>
         <p class="screen-subtitle">{{ eggs().length }} ovo{{ eggs().length !== 1 ? 's' : '' }} aguardando</p>
+        @if (auth.isAdmin() && eggs().length > 0) {
+          <button class="btn-admin-hatch" (click)="adminHatchAll()" [disabled]="hatchingAll()">
+            {{ hatchingAll() ? '⏳ Chocando...' : '⚡ Chocar Tudo (Admin)' }}
+          </button>
+        }
       </header>
 
       @if (eggs().length === 0) {
@@ -120,6 +126,22 @@ import { Subscription } from 'rxjs';
       margin: var(--space-xs) 0 0;
       font-weight: 600;
     }
+
+    .btn-admin-hatch {
+      margin-top: var(--space-sm);
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      border: 2px dashed #F59E0B;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-out);
+    }
+    .btn-admin-hatch:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-admin-hatch:active:not(:disabled) { transform: scale(0.97); }
 
     /* Empty state */
     .empty-state {
@@ -323,12 +345,14 @@ import { Subscription } from 'rxjs';
 })
 export class IncubadoraComponent implements OnInit, OnDestroy {
   private db = inject(FirestoreService);
-  private auth = inject(AuthService);
+  auth = inject(AuthService);
+  private router = inject(Router);
 
   readonly eggs = signal<Egg[]>([]);
   readonly hatching = signal<string | null>(null);
   readonly watchingAd = signal<string | null>(null);
   readonly hatchedBird = signal<typeof BIRDS[0] | null>(null);
+  readonly hatchingAll = signal(false);
 
   private sub?: Subscription;
   private tickInterval?: ReturnType<typeof setInterval>;
@@ -382,6 +406,18 @@ export class IncubadoraComponent implements OnInit, OnDestroy {
       if (bird) this.hatchedBird.set(bird);
     } finally {
       this.hatching.set(null);
+    }
+  }
+
+  async adminHatchAll(): Promise<void> {
+    const uid = this.auth.currentUser()?.uid;
+    if (!uid || this.hatchingAll()) return;
+    this.hatchingAll.set(true);
+    try {
+      await this.db.adminHatchAllEggs(uid);
+      this.router.navigate(['/aviario']);
+    } finally {
+      this.hatchingAll.set(false);
     }
   }
 

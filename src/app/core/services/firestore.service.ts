@@ -166,4 +166,56 @@ export class FirestoreService {
   getUserProfile(userId: string) {
     return docData(doc(this.db, `users/${userId}`), { idField: 'uid' });
   }
+
+  // ─── Admin Tools ─────────────────────────────────────────
+
+  async adminGenerateEggs(userId: string, count: number, food: FoodType, rarity: Rarity): Promise<void> {
+    const batch = writeBatch(this.db);
+    const eggsCol = collection(this.db, 'eggs');
+    for (let i = 0; i < count; i++) {
+      const birdId = pickBird(rarity, food, BIRDS);
+      const egg: Omit<Egg, 'id'> = {
+        userId,
+        birdId,
+        rarity,
+        foodUsed: food,
+        hatchAt: new Date(), // ready to hatch immediately
+        createdAt: new Date(),
+        hatched: false,
+        sessionId: 'admin',
+      };
+      batch.set(doc(eggsCol), egg);
+    }
+    await batch.commit();
+  }
+
+  async adminHatchAllEggs(userId: string): Promise<void> {
+    const { getDocs } = await import('@angular/fire/firestore');
+    const q = query(
+      collection(this.db, 'eggs'),
+      where('userId', '==', userId),
+      where('hatched', '==', false)
+    );
+    const snap = await getDocs(q);
+    const batch = writeBatch(this.db);
+    snap.forEach(docSnap => {
+      const egg = docSnap.data() as Egg;
+      batch.update(docSnap.ref, { hatched: true });
+      const birdRef = doc(collection(this.db, 'userBirds'));
+      const userBird: Omit<UserBird, 'id'> = {
+        userId: egg.userId,
+        birdId: egg.birdId,
+        stage: 'filhote',
+        sessionsWithBird: 0,
+        collectedAt: new Date(),
+      };
+      batch.set(birdRef, userBird);
+    });
+    await batch.commit();
+  }
+
+  async adminResetStats(userId: string): Promise<void> {
+    const userRef = doc(this.db, `users/${userId}`);
+    await updateDoc(userRef, { totalFocusMinutes: 0, totalSessions: 0 });
+  }
 }

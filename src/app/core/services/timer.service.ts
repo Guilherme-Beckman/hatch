@@ -57,6 +57,13 @@ export class TimerService {
     this.elapsedSeconds.set(0);
   }
 
+  skipToEnd(): void {
+    if (this.state() !== 'running' && this.state() !== 'paused') return;
+    this.clearInterval();
+    this.elapsedSeconds.set(this.targetMinutes() * 60);
+    this.state.set('finished');
+  }
+
   setFood(food: FoodType): void {
     this.selectedFood.set(food);
   }

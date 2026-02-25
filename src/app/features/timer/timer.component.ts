@@ -119,12 +119,18 @@ import { eggsFromSession } from '../../core/models/session.model';
               <button class="btn-secondary" (click)="timer.pause()">⏸ Pausar</button>
               <button class="btn-danger" (click)="confirmAbandon()">✕ Abandonar</button>
             </div>
+            @if (auth.isAdmin()) {
+              <button class="btn-admin" (click)="timer.skipToEnd()" title="Admin: pular para o fim">⚡ Pular timer</button>
+            }
           }
           @case ('paused') {
             <div class="controls-row">
               <button class="btn-primary" (click)="timer.resume()">▶ Continuar</button>
               <button class="btn-danger" (click)="confirmAbandon()">✕ Abandonar</button>
             </div>
+            @if (auth.isAdmin()) {
+              <button class="btn-admin" (click)="timer.skipToEnd()" title="Admin: pular para o fim">⚡ Pular timer</button>
+            }
           }
           @case ('finished') {
             <div class="finished-message">
@@ -358,6 +364,21 @@ import { eggsFromSession } from '../../core/models/session.model';
     .btn-start:active { transform: scale(0.97); animation: none; }
     button:active { transform: scale(0.97); }
 
+    .btn-admin {
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      border: 2px dashed #F59E0B;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s var(--ease-out);
+    }
+    .btn-admin:active { transform: scale(0.97); }
+
     /* Finished */
     .finished-message { text-align: center; animation: scaleIn 0.4s var(--ease-spring) both; }
     .finished-emoji { font-size: 56px; margin: 0; }
@@ -393,7 +414,7 @@ import { eggsFromSession } from '../../core/models/session.model';
 })
 export class TimerComponent implements OnDestroy {
   timer = inject(TimerService);
-  private auth = inject(AuthService);
+  auth = inject(AuthService);
   private db = inject(FirestoreService);
   private router = inject(Router);
 
