@@ -24,31 +24,33 @@ type AviarioTab = 'album' | 'cena';
         <button class="tab-btn" [class.active]="activeTab() === 'cena'" (click)="activeTab.set('cena')">
           🌳 Cena
         </button>
+        <div class="tab-indicator" [class.right]="activeTab() === 'cena'"></div>
       </div>
 
       @if (activeTab() === 'album') {
-        <!-- Album view -->
         @if (userBirds().length === 0) {
           <div class="empty-state">
-            <p class="empty-emoji">🪺</p>
+            <div class="empty-icon-wrapper">
+              <span class="empty-emoji">🪺</span>
+            </div>
             <h3 class="empty-title">Seu aviário está vazio</h3>
             <p class="empty-body">Choque ovos na incubadora para trazer pássaros aqui!</p>
           </div>
         } @else {
-          <!-- Rarity filter -->
           <div class="filter-row">
             <button class="filter-btn" [class.active]="rarityFilter() === null" (click)="rarityFilter.set(null)">Todos</button>
-            <button class="filter-btn comum" [class.active]="rarityFilter() === 'comum'" (click)="rarityFilter.set('comum')">Comum</button>
-            <button class="filter-btn incomum" [class.active]="rarityFilter() === 'incomum'" (click)="rarityFilter.set('incomum')">Incomum</button>
-            <button class="filter-btn raro" [class.active]="rarityFilter() === 'raro'" (click)="rarityFilter.set('raro')">Raro</button>
-            <button class="filter-btn lendario" [class.active]="rarityFilter() === 'lendario'" (click)="rarityFilter.set('lendario')">Lendário</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'comum'" (click)="rarityFilter.set('comum')">Comum</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'incomum'" (click)="rarityFilter.set('incomum')">Incomum</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'raro'" (click)="rarityFilter.set('raro')">Raro</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'lendario'" (click)="rarityFilter.set('lendario')">Lendário</button>
           </div>
 
           <div class="birds-grid">
-            @for (ub of filteredBirds(); track ub.id) {
+            @for (ub of filteredBirds(); track ub.id; let i = $index) {
               <div
                 class="bird-card"
                 [style.--rarity-color]="getBirdData(ub)?.rarity ? RARITY_CONFIG[getBirdData(ub)!.rarity].color : '#888'"
+                [style.animation-delay]="i * 50 + 'ms'"
                 (click)="selectedBird.set(ub)"
               >
                 <div class="bird-stage-badge">{{ stageEmoji(ub.stage) }}</div>
@@ -67,13 +69,13 @@ type AviarioTab = 'album' | 'cena';
       }
 
       @if (activeTab() === 'cena') {
-        <!-- Scene view -->
         <div class="scene-container">
           <div class="scene-sky">
             <div class="scene-sun">☀️</div>
             <div class="scene-clouds">
               <span class="cloud">☁️</span>
               <span class="cloud c2">☁️</span>
+              <span class="cloud c3">☁️</span>
             </div>
           </div>
           <div class="scene-tree">
@@ -103,10 +105,12 @@ type AviarioTab = 'album' | 'cena';
           <div class="modal" (click)="$event.stopPropagation()">
             @if (getBirdData(selectedBird()!); as bird) {
               <div class="detail-avatar">{{ getBirdEmoji(selectedBird()!) }}</div>
-              <div class="detail-stage">{{ stageLabel(selectedBird()!.stage) }}</div>
+              <div class="detail-stage-badge" [style.background]="RARITY_CONFIG[bird.rarity].gradient">
+                {{ stageLabel(selectedBird()!.stage) }}
+              </div>
               <h2 class="detail-name">{{ bird.name }}</h2>
               <p class="detail-species">{{ bird.species }}</p>
-              <div class="detail-rarity" [style.background]="RARITY_CONFIG[bird.rarity].gradient">
+              <div class="detail-rarity" [style.color]="RARITY_CONFIG[bird.rarity].color">
                 {{ RARITY_CONFIG[bird.rarity].label }}
               </div>
               <p class="detail-desc">{{ bird.description }}</p>
@@ -130,98 +134,212 @@ type AviarioTab = 'album' | 'cena';
   `,
   styles: [`
     .aviario-screen {
-      padding: 24px 20px;
+      padding: var(--space-lg) 20px;
       min-height: 100dvh;
       background: var(--bg);
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: var(--space-lg);
+      animation: fadeInUp 0.4s var(--ease-out) both;
     }
     .screen-header { text-align: center; }
-    .screen-title { font-size: 28px; font-weight: 800; color: var(--text); margin: 0; }
-    .screen-subtitle { font-size: 14px; color: var(--text-muted); margin: 4px 0 0; }
+    .screen-title { font-size: 28px; font-weight: 800; color: var(--text); margin: 0; letter-spacing: -0.5px; }
+    .screen-subtitle { font-size: 14px; color: var(--text-muted); margin: var(--space-xs) 0 0; font-weight: 600; }
 
-    .tab-row { display: flex; gap: 8px; background: var(--surface); border-radius: 12px; padding: 4px; }
-    .tab-btn {
-      flex: 1; padding: 10px; border-radius: 9px; border: none;
-      background: transparent; color: var(--text-muted);
-      font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    /* Tabs */
+    .tab-row {
+      display: flex;
+      gap: 0;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
     }
-    .tab-btn.active { background: var(--bg); color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .tab-btn {
+      flex: 1; padding: 10px; border-radius: 10px; border: none;
+      background: transparent; color: var(--text-muted);
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: color 0.3s var(--ease-out);
+      z-index: 1;
+    }
+    .tab-btn.active { color: var(--primary); }
+    .tab-indicator {
+      position: absolute;
+      left: 4px; top: 4px; bottom: 4px;
+      width: calc(50% - 4px);
+      background: var(--bg);
+      border-radius: 10px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s var(--ease-out);
+    }
+    .tab-indicator.right { transform: translateX(100%); }
 
+    /* Empty state */
     .empty-state {
       flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 8px; padding: 40px 0;
+      align-items: center; justify-content: center; gap: var(--space-sm); padding: 40px 0;
     }
-    .empty-emoji { font-size: 64px; margin: 0; }
-    .empty-title { font-size: 20px; font-weight: 700; color: var(--text); margin: 0; }
-    .empty-body { font-size: 14px; color: var(--text-muted); margin: 0; text-align: center; }
+    .empty-icon-wrapper {
+      width: 100px; height: 100px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface); border-radius: 50%;
+      box-shadow: var(--shadow-md); margin-bottom: var(--space-sm);
+    }
+    .empty-emoji { font-size: 52px; }
+    .empty-title { font-size: 20px; font-weight: 800; color: var(--text); margin: 0; }
+    .empty-body { font-size: 14px; color: var(--text-muted); margin: 0; text-align: center; line-height: 1.5; }
 
+    /* Filter */
     .filter-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
     .filter-btn {
-      padding: 6px 12px; border-radius: 20px;
+      padding: 6px 14px; border-radius: var(--radius-full);
       border: 2px solid var(--border); background: var(--surface);
-      font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
-      color: var(--text-muted); transition: all 0.15s;
+      font-size: 12px; font-weight: 700; font-family: inherit;
+      cursor: pointer; white-space: nowrap;
+      color: var(--text-muted); transition: all 0.2s var(--ease-out);
     }
-    .filter-btn.active { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .filter-btn:active { transform: scale(0.95); }
+    .filter-btn.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
 
+    /* Birds grid */
     .birds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .bird-card {
       background: var(--surface);
-      border-radius: 14px;
-      padding: 12px 8px;
+      border-radius: var(--radius-md);
+      padding: 14px 8px 10px;
       text-align: center;
       position: relative;
       cursor: pointer;
       border-top: 3px solid var(--rarity-color);
-      transition: transform 0.15s;
+      transition: all 0.2s var(--ease-out);
+      box-shadow: var(--shadow-sm);
+      animation: fadeInUp 0.4s var(--ease-out) both;
     }
     .bird-card:active { transform: scale(0.95); }
     .bird-stage-badge {
       position: absolute; top: 6px; right: 6px;
       font-size: 12px; background: var(--bg); border-radius: 50%;
-      width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm);
     }
-    .bird-avatar { font-size: 36px; line-height: 1.2; }
-    .bird-card-name { font-size: 11px; font-weight: 700; color: var(--text); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .bird-card-rarity { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-top: 2px; }
-    .bird-progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-    .bird-progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.3s; }
+    .bird-avatar { font-size: 40px; line-height: 1.2; }
+    .bird-card-name {
+      font-size: 11px; font-weight: 800; color: var(--text);
+      margin-top: var(--space-xs);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .bird-card-rarity {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+    .bird-progress-bar {
+      height: 4px; background: var(--border);
+      border-radius: var(--radius-full);
+      margin-top: var(--space-sm); overflow: hidden;
+    }
+    .bird-progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-full);
+      transition: width 0.4s var(--ease-out);
+    }
 
     /* Scene */
-    .scene-container { border-radius: 20px; overflow: hidden; background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 60%, #4CAF50 60%, #388E3C 100%); min-height: 360px; position: relative; }
+    .scene-container {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: linear-gradient(180deg, #87CEEB 0%, #B8E6F0 55%, #4CAF50 55%, #388E3C 100%);
+      min-height: 380px;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+    }
     .scene-sky { position: relative; height: 60%; }
-    .scene-sun { position: absolute; top: 16px; right: 24px; font-size: 40px; animation: spin-slow 20s linear infinite; }
+    .scene-sun {
+      position: absolute; top: 16px; right: 24px;
+      font-size: 44px;
+      animation: spin 25s linear infinite;
+      filter: drop-shadow(0 0 12px rgba(255, 200, 0, 0.5));
+    }
     .scene-clouds { position: absolute; top: 30px; left: 0; right: 0; }
-    .cloud { font-size: 32px; position: absolute; animation: drift 15s linear infinite; opacity: 0.8; }
-    .cloud.c2 { top: 10px; left: 30%; animation-duration: 20s; animation-delay: -7s; font-size: 24px; }
-    @keyframes drift { from { left: -10%; } to { left: 110%; } }
-    @keyframes spin-slow { to { transform: rotate(360deg); } }
+    .cloud { font-size: 36px; position: absolute; animation: drift 18s linear infinite; opacity: 0.7; }
+    .cloud.c2 { top: 12px; left: 30%; animation-duration: 24s; animation-delay: -8s; font-size: 28px; }
+    .cloud.c3 { top: 50px; left: 60%; animation-duration: 30s; animation-delay: -15s; font-size: 22px; opacity: 0.4; }
+    @keyframes drift { from { left: -15%; } to { left: 115%; } }
 
     .scene-tree { position: absolute; bottom: 40%; left: 50%; transform: translateX(-50%); }
-    .scene-trunk { font-size: 80px; display: block; text-align: center; }
-    .scene-branches { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); width: 200px; height: 150px; }
+    .scene-trunk { font-size: 88px; display: block; text-align: center; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
+    .scene-branches { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); width: 220px; height: 160px; }
     .branch-bird { position: absolute; }
-    .scene-bird-emoji { font-size: 24px; cursor: pointer; display: inline-block; animation: bob 3s ease-in-out infinite alternate; }
-    @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-8px); } }
-    .scene-empty-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; color: rgba(0,0,0,0.5); white-space: nowrap; text-align: center; }
+    .scene-bird-emoji {
+      font-size: 28px; cursor: pointer; display: inline-block;
+      animation: bob 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      transition: transform 0.2s var(--ease-spring);
+    }
+    @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+    .scene-empty-hint {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 13px; color: rgba(0,0,0,0.4); white-space: nowrap; text-align: center; font-weight: 600;
+    }
     .scene-ground { position: absolute; bottom: 0; width: 100%; padding: 8px; }
-    .scene-grass { font-size: 20px; text-align: center; }
+    .scene-grass { font-size: 22px; text-align: center; }
 
     /* Modal */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 24px; }
-    .modal { background: var(--surface); border-radius: 24px; padding: 28px 24px; width: 100%; max-width: 320px; text-align: center; }
-    .detail-avatar { font-size: 72px; }
-    .detail-stage { font-size: 13px; color: var(--text-muted); margin: 4px 0; }
-    .detail-name { font-size: 22px; font-weight: 800; color: var(--text); margin: 4px 0; }
-    .detail-species { font-size: 13px; color: var(--text-muted); font-style: italic; margin: 0 0 8px; }
-    .detail-rarity { display: inline-block; padding: 4px 12px; border-radius: 20px; color: #fff; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
-    .detail-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin: 0 0 8px; }
-    .detail-habitat { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
-    .detail-sessions { font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 4px; }
-    .detail-next-stage { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-    .btn-close { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; }
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; padding: var(--space-lg);
+      animation: fadeIn 0.2s ease;
+    }
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl) var(--space-lg);
+      width: 100%; max-width: 340px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      animation: scaleIn 0.3s var(--ease-spring) both;
+    }
+    .detail-avatar { font-size: 80px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); }
+    .detail-stage-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      margin: var(--space-sm) 0;
+      letter-spacing: 0.5px;
+    }
+    .detail-name { font-size: 24px; font-weight: 800; color: var(--text); margin: 0 0 var(--space-xs); letter-spacing: -0.5px; }
+    .detail-species { font-size: 13px; color: var(--text-muted); font-style: italic; margin: 0 0 var(--space-sm); }
+    .detail-rarity { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--space-sm); }
+    .detail-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0 0 var(--space-sm); }
+    .detail-habitat { font-size: 13px; color: var(--text-muted); margin-bottom: var(--space-xs); }
+    .detail-sessions { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: var(--space-xs); }
+    .detail-next-stage { font-size: 12px; color: var(--text-muted); margin-bottom: var(--space-lg); font-weight: 600; }
+    .btn-close {
+      width: 100%; padding: 12px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px; font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-out);
+    }
+    .btn-close:active { transform: scale(0.97); }
   `],
 })
 export class AviarioComponent implements OnInit, OnDestroy {

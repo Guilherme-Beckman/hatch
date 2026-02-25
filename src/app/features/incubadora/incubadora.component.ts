@@ -18,15 +18,22 @@ import { Subscription } from 'rxjs';
 
       @if (eggs().length === 0) {
         <div class="empty-state">
-          <p class="empty-emoji">🥚</p>
+          <div class="empty-icon-wrapper">
+            <span class="empty-emoji">🥚</span>
+          </div>
           <h3 class="empty-title">Nenhum ovo ainda</h3>
           <p class="empty-body">Complete uma sessão de foco para ganhar ovos!</p>
         </div>
       } @else {
         <div class="eggs-list">
-          @for (egg of eggs(); track egg.id) {
-            <div class="egg-card" [style.--rarity-gradient]="getRarityGradient(egg)">
-              <div class="egg-icon">
+          @for (egg of eggs(); track egg.id; let i = $index) {
+            <div
+              class="egg-card"
+              [class.ready]="isReady(egg)"
+              [style.animation-delay]="i * 60 + 'ms'"
+            >
+              <div class="egg-rarity-bar" [style.background]="getRarityGradient(egg)"></div>
+              <div class="egg-icon" [class.wiggle]="isReady(egg)">
                 <span class="egg-emoji">{{ getEggEmoji(egg) }}</span>
                 @if (isReady(egg)) {
                   <span class="ready-badge">✓</span>
@@ -91,42 +98,80 @@ import { Subscription } from 'rxjs';
   `,
   styles: [`
     .incubadora-screen {
-      padding: 24px 20px;
+      padding: var(--space-lg) 20px;
       min-height: 100dvh;
       background: var(--bg);
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: var(--space-lg);
+      animation: fadeInUp 0.4s var(--ease-out) both;
     }
     .screen-header { text-align: center; }
-    .screen-title { font-size: 28px; font-weight: 800; color: var(--text); margin: 0; }
-    .screen-subtitle { font-size: 14px; color: var(--text-muted); margin: 4px 0 0; }
+    .screen-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+    .screen-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: var(--space-xs) 0 0;
+      font-weight: 600;
+    }
 
+    /* Empty state */
     .empty-state {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: var(--space-sm);
       padding: 40px 0;
     }
-    .empty-emoji { font-size: 64px; margin: 0; }
-    .empty-title { font-size: 20px; font-weight: 700; color: var(--text); margin: 0; }
-    .empty-body { font-size: 14px; color: var(--text-muted); margin: 0; text-align: center; }
+    .empty-icon-wrapper {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border-radius: 50%;
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--space-sm);
+    }
+    .empty-emoji { font-size: 52px; }
+    .empty-title { font-size: 20px; font-weight: 800; color: var(--text); margin: 0; }
+    .empty-body { font-size: 14px; color: var(--text-muted); margin: 0; text-align: center; line-height: 1.5; }
 
-    .eggs-list { display: flex; flex-direction: column; gap: 12px; }
+    /* Eggs list */
+    .eggs-list { display: flex; flex-direction: column; gap: var(--space-sm); }
     .egg-card {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: var(--space-md);
       background: var(--surface);
-      border-radius: 16px;
-      padding: 16px;
-      border-left: 4px solid transparent;
-      border-image: var(--rarity-gradient) 1;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s var(--ease-out);
+      animation: fadeInUp 0.4s var(--ease-out) both;
     }
+    .egg-card.ready {
+      box-shadow: var(--shadow-md), 0 0 0 2px var(--primary-glow);
+    }
+    .egg-rarity-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+    }
+
     .egg-icon {
       position: relative;
       width: 56px;
@@ -137,61 +182,143 @@ import { Subscription } from 'rxjs';
       background: var(--bg);
       border-radius: 50%;
       flex-shrink: 0;
+      transition: transform 0.3s var(--ease-spring);
     }
+    .egg-icon.wiggle { animation: wiggle 1.5s ease-in-out infinite; }
     .egg-emoji { font-size: 32px; }
     .ready-badge {
       position: absolute;
-      bottom: 0; right: 0;
-      background: #22c55e;
+      bottom: -2px; right: -2px;
+      background: var(--gradient-primary);
       color: white;
       border-radius: 50%;
-      width: 18px; height: 18px;
+      width: 20px; height: 20px;
       font-size: 10px;
       display: flex; align-items: center; justify-content: center;
       font-weight: bold;
+      box-shadow: 0 2px 6px rgba(46, 204, 113, 0.4);
     }
     .egg-info { flex: 1; min-width: 0; }
-    .egg-rarity { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .egg-bird-name { font-size: 15px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .egg-countdown { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .egg-countdown.ready { color: #22c55e; font-weight: 600; }
+    .egg-rarity {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .egg-bird-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .egg-countdown {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    .egg-countdown.ready {
+      color: var(--primary);
+      font-weight: 700;
+    }
 
     .egg-actions { flex-shrink: 0; }
     .btn-hatch, .btn-ad {
-      padding: 8px 14px;
-      border-radius: 10px;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
       border: none;
       font-size: 13px;
       font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: all 0.2s var(--ease-out);
       white-space: nowrap;
     }
-    .btn-hatch { background: var(--primary); color: #fff; }
-    .btn-ad { background: var(--surface); border: 2px solid var(--border); color: var(--text); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-hatch {
+      background: var(--gradient-primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+    }
+    .btn-hatch:active { transform: scale(0.95); }
+    .btn-ad {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .btn-ad:active { transform: scale(0.95); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* Modal */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center;
-      z-index: 200; padding: 24px;
+      z-index: 200; padding: var(--space-lg);
+      animation: fadeIn 0.2s ease;
     }
     .modal {
       background: var(--surface);
-      border-radius: 24px;
-      padding: 32px 24px;
-      width: 100%; max-width: 320px;
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl) var(--space-lg);
+      width: 100%; max-width: 340px;
       text-align: center;
+      box-shadow: var(--shadow-lg);
+      animation: scaleIn 0.4s var(--ease-spring) both;
     }
-    .hatch-confetti { font-size: 40px; }
-    .hatch-bird-emoji { font-size: 72px; margin: 8px 0; }
-    .hatch-title { font-size: 28px; font-weight: 800; color: var(--text); margin: 0 0 4px; }
-    .hatch-bird-name { font-size: 20px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
-    .hatch-rarity { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 4px; }
-    .hatch-species { font-size: 12px; color: var(--text-muted); font-style: italic; margin: 0 0 8px; }
-    .hatch-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.5; }
-    .btn-primary { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .hatch-confetti { font-size: 44px; animation: pulse 1s ease-in-out 2; }
+    .hatch-bird-emoji { font-size: 80px; margin: var(--space-sm) 0; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); }
+    .hatch-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0 0 var(--space-xs);
+      letter-spacing: -0.5px;
+    }
+    .hatch-bird-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 var(--space-xs);
+    }
+    .hatch-rarity {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 var(--space-xs);
+    }
+    .hatch-species {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin: 0 0 var(--space-sm);
+    }
+    .hatch-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: 0 0 var(--space-lg);
+      line-height: 1.6;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--gradient-primary);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: var(--shadow-md), 0 4px 16px rgba(46, 204, 113, 0.25);
+      transition: all 0.2s var(--ease-out);
+    }
+    .btn-primary:active { transform: scale(0.97); }
   `],
 })
 export class IncubadoraComponent implements OnInit, OnDestroy {
@@ -210,7 +337,6 @@ export class IncubadoraComponent implements OnInit, OnDestroy {
     const uid = this.auth.currentUser()?.uid;
     if (!uid) return;
     this.sub = this.db.getUnhatchedEggs(uid).subscribe(eggs => this.eggs.set(eggs));
-    // Tick every 30s to refresh countdowns
     this.tickInterval = setInterval(() => this.eggs.set([...this.eggs()]), 30000);
   }
 
@@ -263,13 +389,9 @@ export class IncubadoraComponent implements OnInit, OnDestroy {
     if (this.watchingAd()) return;
     this.watchingAd.set(egg.id);
     try {
-      // AdMob rewarded ad will be integrated here
-      // For now, advance hatch time by a fixed amount
       const newHatchAt = new Date(Math.max(Date.now(), egg.hatchAt.getTime() - 3_600_000));
       const { doc, updateDoc } = await import('@angular/fire/firestore');
       const { Firestore } = await import('@angular/fire/firestore');
-      // Using Firestore directly is handled via FirestoreService extension
-      // Placeholder: reduce hatchAt by 1h
       console.log('Ad watched — reducing hatch time for egg', egg.id);
     } finally {
       this.watchingAd.set(null);
