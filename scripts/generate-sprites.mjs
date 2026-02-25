@@ -189,7 +189,7 @@ async function generateHuggingFace(prompt, destPath) {
   const buf = await postJson(
     {
       hostname: 'router.huggingface.co',
-      path: '/models/black-forest-labs/FLUX.1-schnell',
+      path: '/hf-inference/models/black-forest-labs/FLUX.1-schnell',
       headers: { Authorization: `Bearer ${token}` },
       timeout: 120_000,
     },
