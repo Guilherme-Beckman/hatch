@@ -10,6 +10,6 @@ export const environment = {
     measurementId: 'G-0G1541LW96',
   },
   admob: {
-    rewardedAdId: 'ca-app-pub-XXXXXXXXXX/XXXXXXXXXX', // real ID — replace before release
+    rewardedAdId: 'ca-app-pub-XXXXXXXXXX/XXXXXXXXXX',
   },
 };
