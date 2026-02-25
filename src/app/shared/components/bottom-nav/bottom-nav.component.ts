@@ -9,22 +9,22 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     <nav class="bottom-nav">
       <a routerLink="/timer" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">⏱️</span>
-        <span class="nav-label">Focar</span>
+        <span class="nav-label">Focus</span>
         <span class="nav-dot"></span>
       </a>
       <a routerLink="/incubadora" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🥚</span>
-        <span class="nav-label">Ovos</span>
+        <span class="nav-label">Eggs</span>
         <span class="nav-dot"></span>
       </a>
       <a routerLink="/aviario" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">🐦</span>
-        <span class="nav-label">Aviário</span>
+        <span class="nav-label">Aviary</span>
         <span class="nav-dot"></span>
       </a>
       <a routerLink="/perfil" routerLinkActive="active" class="nav-item">
         <span class="nav-icon">👤</span>
-        <span class="nav-label">Perfil</span>
+        <span class="nav-label">Profile</span>
         <span class="nav-dot"></span>
       </a>
     </nav>

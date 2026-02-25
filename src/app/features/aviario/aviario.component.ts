@@ -12,17 +12,17 @@ type AviarioTab = 'album' | 'cena';
   template: `
     <div class="aviario-screen">
       <header class="screen-header">
-        <h1 class="screen-title">Aviário</h1>
-        <p class="screen-subtitle">{{ userBirds().length }} pássaro{{ userBirds().length !== 1 ? 's' : '' }} coletado{{ userBirds().length !== 1 ? 's' : '' }}</p>
+        <h1 class="screen-title">Aviary</h1>
+        <p class="screen-subtitle">{{ userBirds().length }} bird{{ userBirds().length !== 1 ? 's' : '' }} collected</p>
       </header>
 
       <!-- Tab selector -->
       <div class="tab-row">
         <button class="tab-btn" [class.active]="activeTab() === 'album'" (click)="activeTab.set('album')">
-          📚 Álbum
+          📚 Album
         </button>
         <button class="tab-btn" [class.active]="activeTab() === 'cena'" (click)="activeTab.set('cena')">
-          🌳 Cena
+          🌳 Scene
         </button>
         <div class="tab-indicator" [class.right]="activeTab() === 'cena'"></div>
       </div>
@@ -33,16 +33,16 @@ type AviarioTab = 'album' | 'cena';
             <div class="empty-icon-wrapper">
               <span class="empty-emoji">🪺</span>
             </div>
-            <h3 class="empty-title">Seu aviário está vazio</h3>
-            <p class="empty-body">Choque ovos na incubadora para trazer pássaros aqui!</p>
+            <h3 class="empty-title">Your aviary is empty</h3>
+            <p class="empty-body">Hatch eggs in the incubator to bring birds here!</p>
           </div>
         } @else {
           <div class="filter-row">
-            <button class="filter-btn" [class.active]="rarityFilter() === null" (click)="rarityFilter.set(null)">Todos</button>
-            <button class="filter-btn" [class.active]="rarityFilter() === 'comum'" (click)="rarityFilter.set('comum')">Comum</button>
-            <button class="filter-btn" [class.active]="rarityFilter() === 'incomum'" (click)="rarityFilter.set('incomum')">Incomum</button>
-            <button class="filter-btn" [class.active]="rarityFilter() === 'raro'" (click)="rarityFilter.set('raro')">Raro</button>
-            <button class="filter-btn" [class.active]="rarityFilter() === 'lendario'" (click)="rarityFilter.set('lendario')">Lendário</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === null" (click)="rarityFilter.set(null)">All</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'comum'" (click)="rarityFilter.set('comum')">Common</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'incomum'" (click)="rarityFilter.set('incomum')">Uncommon</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'raro'" (click)="rarityFilter.set('raro')">Rare</button>
+            <button class="filter-btn" [class.active]="rarityFilter() === 'lendario'" (click)="rarityFilter.set('lendario')">Legendary</button>
           </div>
 
           <div class="birds-grid">
@@ -88,7 +88,7 @@ type AviarioTab = 'album' | 'cena';
                 </div>
               }
               @if (userBirds().length === 0) {
-                <div class="scene-empty-hint">Choque ovos para ver pássaros aqui!</div>
+                <div class="scene-empty-hint">Hatch eggs to see birds here!</div>
               }
             </div>
             <div class="scene-trunk">🌳</div>
@@ -116,17 +116,17 @@ type AviarioTab = 'album' | 'cena';
               <p class="detail-desc">{{ bird.description }}</p>
               <div class="detail-habitat">🌿 {{ bird.habitat }}</div>
               <div class="detail-sessions">
-                {{ selectedBird()!.sessionsWithBird }} sessão(ões) juntos
+                {{ selectedBird()!.sessionsWithBird }} session{{ selectedBird()!.sessionsWithBird !== 1 ? 's' : '' }} together
               </div>
               <div class="detail-next-stage">
                 @if (selectedBird()!.stage !== 'adulto') {
-                  Próximo estágio em {{ sessionsToNextStage(selectedBird()!) }} sessões
+                  Next stage in {{ sessionsToNextStage(selectedBird()!) }} session{{ sessionsToNextStage(selectedBird()!) !== 1 ? 's' : '' }}
                 } @else {
-                  Pássaro adulto! 🎉
+                  Fully grown! 🎉
                 }
               </div>
             }
-            <button class="btn-close" (click)="selectedBird.set(null)">Fechar</button>
+            <button class="btn-close" (click)="selectedBird.set(null)">Close</button>
           </div>
         </div>
       }
@@ -395,7 +395,7 @@ export class AviarioComponent implements OnInit, OnDestroy {
   }
 
   stageLabel(stage: BirdStage): string {
-    return { filhote: 'Filhote', jovem: 'Jovem', adulto: 'Adulto' }[stage];
+    return { filhote: 'Hatchling', jovem: 'Juvenile', adulto: 'Adult' }[stage];
   }
 
   getStageProgress(ub: UserBird): number {

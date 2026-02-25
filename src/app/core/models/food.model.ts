@@ -12,23 +12,23 @@ export interface Food {
 export const FOODS: Food[] = [
   {
     id: 'semente',
-    name: 'Semente',
+    name: 'Seed',
     emoji: '🌾',
-    description: 'Atrai pássaros pequenos dos campos',
+    description: 'Attracts small field birds',
     attractsBirds: ['bem-te-vi', 'pintassilgo', 'beija-flor', 'uirapuru'],
   },
   {
     id: 'fruta',
-    name: 'Fruta',
+    name: 'Fruit',
     emoji: '🍎',
-    description: 'Atrai pássaros tropicais da floresta',
+    description: 'Attracts tropical forest birds',
     attractsBirds: ['sabia', 'tucano', 'arara-azul', 'harpia'],
   },
   {
     id: 'biscoito',
-    name: 'Biscoito',
+    name: 'Biscuit',
     emoji: '🍪',
-    description: 'Atrai psitacídeos e aves inteligentes',
+    description: 'Attracts parrots and intelligent birds',
     attractsBirds: ['periquito', 'papagaio', 'cacatua', 'ararinha-azul'],
   },
 ];

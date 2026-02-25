@@ -13,13 +13,13 @@ import { eggsFromSession } from '../../core/models/session.model';
     <div class="timer-screen">
       <header class="timer-header">
         <h1 class="screen-title">Hatch</h1>
-        <p class="screen-subtitle">Foque e atraia pássaros raros</p>
+        <p class="screen-subtitle">Focus and attract rare birds</p>
       </header>
 
       <!-- Food selector -->
       @if (timer.state() === 'idle') {
         <section class="food-section">
-          <h2 class="section-label">Qual alimento colocar hoje?</h2>
+          <h2 class="section-label">Which food to place today?</h2>
           <div class="food-grid">
             @for (food of foods; track food.id) {
               <button
@@ -37,7 +37,7 @@ import { eggsFromSession } from '../../core/models/session.model';
 
         <!-- Duration selector -->
         <section class="duration-section">
-          <h2 class="section-label">Quanto tempo?</h2>
+          <h2 class="section-label">How long?</h2>
           <div class="duration-presets">
             @for (preset of durationPresets; track preset) {
               <button
@@ -50,7 +50,7 @@ import { eggsFromSession } from '../../core/models/session.model';
             }
           </div>
           <div class="duration-custom">
-            <label class="custom-label">Personalizado:</label>
+            <label class="custom-label">Custom:</label>
             <input
               type="range"
               min="15" max="120" step="5"
@@ -62,8 +62,8 @@ import { eggsFromSession } from '../../core/models/session.model';
           </div>
           <div class="eggs-preview">
             <span class="eggs-icon">🥚</span>
-            Esta sessão vai gerar
-            <strong>{{ eggsPreview() }} ovo{{ eggsPreview() !== 1 ? 's' : '' }}</strong>
+            This session will generate
+            <strong>{{ eggsPreview() }} egg{{ eggsPreview() !== 1 ? 's' : '' }}</strong>
           </div>
         </section>
       }
@@ -111,35 +111,35 @@ import { eggsFromSession } from '../../core/models/session.model';
         @switch (timer.state()) {
           @case ('idle') {
             <button class="btn-start" (click)="start()">
-              🌱 Começar Sessão
+              🌱 Start Session
             </button>
           }
           @case ('running') {
             <div class="controls-row">
-              <button class="btn-secondary" (click)="timer.pause()">⏸ Pausar</button>
-              <button class="btn-danger" (click)="confirmAbandon()">✕ Abandonar</button>
+              <button class="btn-secondary" (click)="timer.pause()">⏸ Pause</button>
+              <button class="btn-danger" (click)="confirmAbandon()">✕ Abandon</button>
             </div>
             @if (auth.isAdmin()) {
-              <button class="btn-admin" (click)="timer.skipToEnd()" title="Admin: pular para o fim">⚡ Pular timer</button>
+              <button class="btn-admin" (click)="timer.skipToEnd()" title="Admin: skip to end">⚡ Skip timer</button>
             }
           }
           @case ('paused') {
             <div class="controls-row">
-              <button class="btn-primary" (click)="timer.resume()">▶ Continuar</button>
-              <button class="btn-danger" (click)="confirmAbandon()">✕ Abandonar</button>
+              <button class="btn-primary" (click)="timer.resume()">▶ Resume</button>
+              <button class="btn-danger" (click)="confirmAbandon()">✕ Abandon</button>
             </div>
             @if (auth.isAdmin()) {
-              <button class="btn-admin" (click)="timer.skipToEnd()" title="Admin: pular para o fim">⚡ Pular timer</button>
+              <button class="btn-admin" (click)="timer.skipToEnd()" title="Admin: skip to end">⚡ Skip timer</button>
             }
           }
           @case ('finished') {
             <div class="finished-message">
               <p class="finished-emoji">🎉</p>
-              <p class="finished-text">Sessão concluída!</p>
-              <p class="finished-sub">{{ eggsPreview() }} ovo{{ eggsPreview() !== 1 ? 's' : '' }} adicionado{{ eggsPreview() !== 1 ? 's' : '' }} à incubadora</p>
+              <p class="finished-text">Session complete!</p>
+              <p class="finished-sub">{{ eggsPreview() }} egg{{ eggsPreview() !== 1 ? 's' : '' }} added to incubator</p>
             </div>
             <button class="btn-primary" (click)="finishSession()">
-              🥚 Ver Incubadora
+              🥚 View Incubator
             </button>
           }
         }
@@ -150,11 +150,11 @@ import { eggsFromSession } from '../../core/models/session.model';
         <div class="modal-overlay" (click)="showAbandonModal.set(false)">
           <div class="modal" (click)="$event.stopPropagation()">
             <p class="modal-emoji">🐣</p>
-            <h3 class="modal-title">Abandonar sessão?</h3>
-            <p class="modal-body">Os pássaros vão embora e você não receberá ovos.</p>
+            <h3 class="modal-title">Abandon session?</h3>
+            <p class="modal-body">The birds will leave and you won't receive any eggs.</p>
             <div class="modal-actions">
-              <button class="btn-secondary" (click)="showAbandonModal.set(false)">Continuar</button>
-              <button class="btn-danger" (click)="abandon()">Abandonar</button>
+              <button class="btn-secondary" (click)="showAbandonModal.set(false)">Keep Going</button>
+              <button class="btn-danger" (click)="abandon()">Abandon</button>
             </div>
           </div>
         </div>
@@ -436,8 +436,8 @@ export class TimerComponent implements OnDestroy {
 
   readonly stateLabel = computed(() => {
     const s = this.timer.state();
-    if (s === 'running') return 'Focando...';
-    if (s === 'paused') return 'Pausado';
+    if (s === 'running') return 'Focusing...';
+    if (s === 'paused') return 'Paused';
     return '';
   });
 
