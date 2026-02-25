@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="225" fill="#F8F9FA" />
+  <!-- Rarity ring -->
+  <circle cx="256" cy="256" r="225" fill="none" stroke="#9B59B6" stroke-width="12" opacity="0.6" />
+
+  <!-- Bird body placeholder (circle scaled by stage) -->
+  <circle cx="256" cy="236" r="191" fill="#9B59B6" opacity="0.85" />
+
+  <!-- Simple beak -->
+  <polygon
+    points="256,341.05 221.62,302.85 290.38,302.85"
+    fill="#E67E22"
+    opacity="0.9"
+  />
+
+  <!-- Eye -->
+  <circle cx="213.98" cy="216.9" r="24.830000000000002" fill="#2C3E50" />
+  <circle cx="206.33999999999997" cy="209.26" r="9.55" fill="white" />
+
+  <!-- Bird name -->
+  <text
+    x="256"
+    y="395.5"
+    text-anchor="middle"
+    font-family="system-ui, sans-serif"
+    font-size="28"
+    font-weight="700"
+    fill="#2C3E50"
+    opacity="0.9"
+  >Cacatua</text>
+
+  <!-- Stage label -->
+  <text
+    x="256"
+    y="431.5"
+    text-anchor="middle"
+    font-family="system-ui, sans-serif"
+    font-size="20"
+    fill="#9B59B6"
+    font-weight="600"
+    opacity="0.8"
+  >Adult</text>
+</svg>

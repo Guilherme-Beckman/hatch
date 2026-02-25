@@ -86,7 +86,9 @@ import { Router } from '@angular/router';
         <div class="modal-overlay" (click)="hatchedBird.set(null)">
           <div class="modal hatch-modal" (click)="$event.stopPropagation()">
             <div class="hatch-confetti">🎊</div>
-            <div class="hatch-bird-emoji">🐦</div>
+            <div class="hatch-bird-emoji">
+              <img class="hatch-bird-sprite" [src]="getHatchedBirdSprite()" [alt]="hatchedBird()!.name" (error)="onSpriteError($event)" />
+            </div>
             <h2 class="hatch-title">It hatched!</h2>
             <p class="hatch-bird-name">{{ hatchedBird()!.name }}</p>
             <p class="hatch-rarity" [style.color]="getRarityColorById(hatchedBird()!.rarity)">
@@ -293,7 +295,8 @@ import { Router } from '@angular/router';
       animation: scaleIn 0.4s var(--ease-spring) both;
     }
     .hatch-confetti { font-size: 44px; animation: pulse 1s ease-in-out 2; }
-    .hatch-bird-emoji { font-size: 80px; margin: var(--space-sm) 0; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); }
+    .hatch-bird-emoji { width: 120px; height: 120px; margin: var(--space-sm) auto; display: flex; align-items: center; justify-content: center; }
+    .hatch-bird-sprite { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); border-radius: 12px; }
     .hatch-title {
       font-size: 28px;
       font-weight: 800;
@@ -392,6 +395,14 @@ export class IncubadoraComponent implements OnInit, OnDestroy {
   getRarityGradient(egg: Egg): string { return RARITY_CONFIG[egg.rarity]?.gradient ?? 'none'; }
   getRarityLabelById(r: string): string { return RARITY_CONFIG[r as keyof typeof RARITY_CONFIG]?.label ?? r; }
   getRarityColorById(r: string): string { return RARITY_CONFIG[r as keyof typeof RARITY_CONFIG]?.color ?? '#888'; }
+
+  getHatchedBirdSprite(): string {
+    return this.hatchedBird()?.stages.filhote ?? '';
+  }
+
+  onSpriteError(event: Event): void {
+    (event.target as HTMLImageElement).style.display = 'none';
+  }
 
   getBirdName(egg: Egg): string {
     return BIRDS.find(b => b.id === egg.birdId)?.name ?? 'Unknown Bird';

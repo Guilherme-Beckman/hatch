@@ -1,0 +1,106 @@
+{
+  "artStyle": "Flat digital illustration, mobile game sprite style, clean white circular background, vibrant saturated colors, no text or labels, square 1:1 composition, Brazilian bird, cute game art style, soft shading",
+  "stageModifiers": {
+    "filhote": "baby hatchling bird, fluffy soft down feathers, oversized round eyes, tiny beak, small compact round body, cute baby proportions, innocent expression, freshly hatched",
+    "jovem": "juvenile adolescent bird, mix of fluffy down and emerging adult plumage, intermediate size, uneven growing feathers, slightly awkward cute proportions, curious expression",
+    "adulto": "fully mature adult bird, complete vibrant characteristic plumage, all markings fully visible, confident perched pose, detailed feather texture, majestic expression"
+  },
+  "birds": [
+    {
+      "id": "bem-te-vi",
+      "name": "Bem-te-vi",
+      "species": "Pitangus sulphuratus",
+      "rarity": "comum",
+      "rarityColor": "#8B9467",
+      "visualDescription": "Medium-sized flycatcher. Bright bold yellow belly and chest, white supercilium stripe above eye, black crown with hidden yellow crown patch, brown back and wings, wide flat bill with slight orange tip, stout upright posture when perched on a branch."
+    },
+    {
+      "id": "pintassilgo",
+      "name": "Pintassilgo",
+      "species": "Spinus magellanicus",
+      "rarity": "incomum",
+      "rarityColor": "#4A90A4",
+      "visualDescription": "Small finch. Bright yellow-green body with yellow underparts, solid black cap on head, black wings with prominent yellow wing bars, white undertail, slender pointed conical beak, compact body, perched on a thin branch."
+    },
+    {
+      "id": "beija-flor",
+      "name": "Beija-flor",
+      "species": "Trochilidae",
+      "rarity": "raro",
+      "rarityColor": "#9B59B6",
+      "visualDescription": "Tiny hummingbird. Iridescent emerald green body, long slender needle-thin bill, wings slightly blurred suggesting hovering motion, brilliant iridescent violet-red throat gorget patch, tiny white belly, hovering near a flower."
+    },
+    {
+      "id": "uirapuru",
+      "name": "Uirapuru",
+      "species": "Cyphorhinus arada",
+      "rarity": "lendario",
+      "rarityColor": "#E67E22",
+      "visualDescription": "Small forest bird. Warm cinnamon-reddish-brown body, intricate black barring pattern on wings and back, pale buff underparts, short rounded tail, short bill, perched quietly on a mossy branch, soft golden mystical glow emanating from body suggesting legendary status."
+    },
+    {
+      "id": "sabia",
+      "name": "Sabiá-laranjeira",
+      "species": "Turdus rufiventris",
+      "rarity": "comum",
+      "rarityColor": "#8B9467",
+      "visualDescription": "Robin-sized thrush. Warm rufous-orange belly and flanks, olive-brown back and wings, bright orange-yellow bill, pale yellow eye ring, white throat with faint streaks, alert upright posture, perched on a garden branch."
+    },
+    {
+      "id": "tucano",
+      "name": "Tucano",
+      "species": "Ramphastos toco",
+      "rarity": "incomum",
+      "rarityColor": "#4A90A4",
+      "visualDescription": "Large toucan. Glossy jet-black body, large white bib covering throat and upper chest, enormous colorful bill with orange base, red tip and yellow sides, small blue eye ring, red undertail coverts, perched solidly on a branch."
+    },
+    {
+      "id": "arara-azul",
+      "name": "Arara-azul",
+      "species": "Anodorhynchus hyacinthinus",
+      "rarity": "raro",
+      "rarityColor": "#9B59B6",
+      "visualDescription": "Giant macaw. Entirely brilliant cobalt-blue plumage all over body and long tail, large strongly hooked black beak with bright yellow bare skin at base, yellow eye ring, long pointed graduated tail feathers, perched with wings slightly spread showing deep blue."
+    },
+    {
+      "id": "harpia",
+      "name": "Harpia",
+      "species": "Harpia harpyja",
+      "rarity": "lendario",
+      "rarityColor": "#E67E22",
+      "visualDescription": "Massive powerful eagle. Pale grey head with distinctive split double grey crest feathers fanned out, dark charcoal-black back and wings, pure white underparts with broad black chest band, enormous powerful grey talons, fierce piercing amber eyes, regal commanding pose, golden legendary aura."
+    },
+    {
+      "id": "periquito",
+      "name": "Periquito",
+      "species": "Brotogeris chiriri",
+      "rarity": "comum",
+      "rarityColor": "#8B9467",
+      "visualDescription": "Small parakeet. Predominantly vivid bright green plumage on body, yellow wing patches visible on folded wings, small hooked orange-yellow beak, long pointed green tail, bright alert eye, lively energetic pose on a branch, slightly tilted head."
+    },
+    {
+      "id": "papagaio",
+      "name": "Papagaio-verdadeiro",
+      "species": "Amazona amazonica",
+      "rarity": "incomum",
+      "rarityColor": "#4A90A4",
+      "visualDescription": "Medium amazon parrot. Bright green body, yellow and orange-red wing speculum patches, small red forehead spot, blue crown highlights, chunky strongly hooked grey beak, short square tail with red-tipped outer feathers, perched with confident posture."
+    },
+    {
+      "id": "cacatua",
+      "name": "Cacatua",
+      "species": "Cacatua galerita",
+      "rarity": "raro",
+      "rarityColor": "#9B59B6",
+      "visualDescription": "Large cockatoo. Pristine snow-white plumage on entire body, prominent sulfur-yellow erect crest fully fanned upward, light yellow blush on cheeks, pale grey hooked beak, dark eyes with blue-grey eye ring, expressive crest raised in curiosity, perched on branch."
+    },
+    {
+      "id": "ararinha-azul",
+      "name": "Ararinha-azul",
+      "species": "Cyanopsitta spixii",
+      "rarity": "lendario",
+      "rarityColor": "#E67E22",
+      "visualDescription": "Small macaw. Entirely soft sky-powder-blue plumage on body, pale grey-blue bare facial skin mask around eyes, small hooked dark beak, long graduated bright blue tail, perched on a dry caatinga thorn branch, ethereal glowing golden legendary aura surrounding the bird."
+    }
+  ]
+}

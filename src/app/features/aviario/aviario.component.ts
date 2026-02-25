@@ -54,7 +54,9 @@ type AviarioTab = 'album' | 'cena';
                 (click)="selectedBird.set(ub)"
               >
                 <div class="bird-stage-badge">{{ stageEmoji(ub.stage) }}</div>
-                <div class="bird-avatar">{{ getBirdEmoji(ub) }}</div>
+                <div class="bird-avatar">
+                  <img class="bird-sprite" [src]="getBirdSpriteUrl(ub)" [alt]="getBirdData(ub)?.name" (error)="onSpriteError($event)" />
+                </div>
                 <div class="bird-card-name">{{ getBirdData(ub)?.name ?? '???' }}</div>
                 <div class="bird-card-rarity" [style.color]="RARITY_CONFIG[getBirdData(ub)?.rarity ?? 'comum'].color">
                   {{ RARITY_CONFIG[getBirdData(ub)?.rarity ?? 'comum'].label }}
@@ -104,7 +106,9 @@ type AviarioTab = 'album' | 'cena';
         <div class="modal-overlay" (click)="selectedBird.set(null)">
           <div class="modal" (click)="$event.stopPropagation()">
             @if (getBirdData(selectedBird()!); as bird) {
-              <div class="detail-avatar">{{ getBirdEmoji(selectedBird()!) }}</div>
+              <div class="detail-avatar">
+              <img class="detail-sprite" [src]="getBirdSpriteUrl(selectedBird()!)" [alt]="getBirdData(selectedBird()!)?.name" (error)="onSpriteError($event)" />
+            </div>
               <div class="detail-stage-badge" [style.background]="RARITY_CONFIG[bird.rarity].gradient">
                 {{ stageLabel(selectedBird()!.stage) }}
               </div>
@@ -228,7 +232,8 @@ type AviarioTab = 'album' | 'cena';
       width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
       box-shadow: var(--shadow-sm);
     }
-    .bird-avatar { font-size: 40px; line-height: 1.2; }
+    .bird-avatar { width: 52px; height: 52px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    .bird-sprite { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
     .bird-card-name {
       font-size: 11px; font-weight: 800; color: var(--text);
       margin-top: var(--space-xs);
@@ -310,7 +315,8 @@ type AviarioTab = 'album' | 'cena';
       box-shadow: var(--shadow-lg);
       animation: scaleIn 0.3s var(--ease-spring) both;
     }
-    .detail-avatar { font-size: 80px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); }
+    .detail-avatar { width: 120px; height: 120px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    .detail-sprite { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); border-radius: 12px; }
     .detail-stage-badge {
       display: inline-block;
       padding: 4px 14px;
@@ -376,6 +382,16 @@ export class AviarioComponent implements OnInit, OnDestroy {
 
   getBirdData(ub: UserBird): Bird | undefined {
     return BIRDS.find(b => b.id === ub.birdId);
+  }
+
+  getBirdSpriteUrl(ub: UserBird): string {
+    const bird = this.getBirdData(ub);
+    if (!bird) return '';
+    return bird.stages[ub.stage];
+  }
+
+  onSpriteError(event: Event): void {
+    (event.target as HTMLImageElement).style.display = 'none';
   }
 
   getBirdEmoji(ub: UserBird): string {
