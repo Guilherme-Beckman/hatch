@@ -7,10 +7,13 @@
  * Providers (no paid API required):
  *   • pollinations  [default] — Pollinations.AI via FLUX, no API key needed
  *   • huggingface             — HF Inference API (FLUX.1-schnell), requires HF_TOKEN in .env
+ *   • gemini                  — Google Gemini 2.5 Flash Image, 500 img/day free, requires GEMINI_API_KEY
+ *                               Get free key at: https://aistudio.google.com/apikey
  *
  * Usage:
  *   node scripts/generate-sprites.mjs                          # all 36 sprites, Pollinations
  *   node scripts/generate-sprites.mjs --provider huggingface   # use Hugging Face
+ *   node scripts/generate-sprites.mjs --provider gemini        # use Google Gemini (recommended)
  *   node scripts/generate-sprites.mjs --bird bem-te-vi         # single bird, all stages
  *   node scripts/generate-sprites.mjs --bird tucano --stage adulto  # single sprite
  *   node scripts/generate-sprites.mjs --help
@@ -43,8 +46,10 @@ if (args.includes('--help')) {
 Usage: node scripts/generate-sprites.mjs [options]
 
 Options:
-  --provider <name>   Image provider: "pollinations" (default, free, no key)
-                      or "huggingface" (requires HF_TOKEN in .env)
+  --provider <name>   Image provider:
+                        "pollinations"  (default) free, no key, uses FLUX
+                        "gemini"        free key from aistudio.google.com, 500 img/day (recommended)
+                        "huggingface"   free key from huggingface.co, FLUX.1-schnell
   --bird <id>         Only generate sprites for this bird id (e.g. bem-te-vi)
   --stage <stage>     Only generate this stage: filhote | jovem | adulto
   --skip-existing     Skip sprites that already exist as .png files
@@ -52,7 +57,8 @@ Options:
 
 Examples:
   node scripts/generate-sprites.mjs
-  node scripts/generate-sprites.mjs --bird harpia --stage adulto
+  node scripts/generate-sprites.mjs --provider gemini
+  node scripts/generate-sprites.mjs --bird harpia --stage adulto --provider gemini
   node scripts/generate-sprites.mjs --provider huggingface
 `);
   process.exit(0);
@@ -134,6 +140,49 @@ async function generatePollinations(prompt, destPath, seed) {
   await downloadUrl(url, destPath);
 }
 
+async function generateGemini(prompt, destPath) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY not set in .env — get a free key at https://aistudio.google.com/apikey');
+
+  const body = JSON.stringify({
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+  });
+
+  const buf = await new Promise((resolve, reject) => {
+    const opts = {
+      hostname: 'generativelanguage.googleapis.com',
+      path: `/v1beta/models/gemini-2.5-flash-image:generateContent?key=${apiKey}`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+    };
+    const req = https.request(opts, (res) => {
+      const chunks = [];
+      res.on('data', c => chunks.push(c));
+      res.on('end', () => {
+        const raw = Buffer.concat(chunks).toString('utf-8');
+        if (res.statusCode !== 200) {
+          return reject(new Error(`Gemini HTTP ${res.statusCode}: ${raw.slice(0, 300)}`));
+        }
+        try {
+          const json = JSON.parse(raw);
+          const parts = json.candidates?.[0]?.content?.parts ?? [];
+          const imgPart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
+          if (!imgPart) return reject(new Error('Gemini response contained no image part'));
+          resolve(Buffer.from(imgPart.inlineData.data, 'base64'));
+        } catch (e) {
+          reject(new Error(`Failed to parse Gemini response: ${e.message}`));
+        }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+
+  writeFileSync(destPath, buf);
+}
+
 async function generateHuggingFace(prompt, destPath) {
   const token = process.env.HF_TOKEN;
   if (!token) throw new Error('HF_TOKEN not set in .env — required for --provider huggingface');
@@ -150,6 +199,7 @@ async function generateHuggingFace(prompt, destPath) {
 }
 
 async function generate(provider, prompt, destPath, seed) {
+  if (provider === 'gemini')      return generateGemini(prompt, destPath);
   if (provider === 'huggingface') return generateHuggingFace(prompt, destPath);
   return generatePollinations(prompt, destPath, seed);
 }
@@ -239,13 +289,16 @@ async function main() {
       console.log(`✗ FAILED: ${err.message}`);
     }
 
-    // Rate-limit delay between requests (Pollinations anonymous = 15s)
-    if (PROVIDER === 'pollinations' && done < todo.length) {
-      const remaining = todo.length - done - failed;
-      if (remaining > 0) {
+    // Rate-limit delays
+    const isLast = (done + failed) >= todo.length;
+    if (!isLast) {
+      if (PROVIDER === 'pollinations') {
         process.stdout.write(`     ⏱  Waiting ${POLLINATIONS_DELAY_MS / 1000}s (rate limit)...`);
         await new Promise(r => setTimeout(r, POLLINATIONS_DELAY_MS));
         process.stdout.write(' ok\n');
+      } else if (PROVIDER === 'gemini') {
+        // Free tier: 15 RPM → wait 5s between requests to stay safely under limit
+        await new Promise(r => setTimeout(r, 5000));
       }
     }
   }
