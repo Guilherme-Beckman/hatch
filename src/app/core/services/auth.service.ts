@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import {
   Auth,
   GoogleAuthProvider,
@@ -22,6 +22,7 @@ export class AuthService {
 
   readonly currentUser = signal<User | null>(null);
   readonly loading = signal(true);
+  readonly isAdmin = computed(() => this.currentUser()?.email === 'guilhermebeckman3@gmail.com');
 
   constructor() {
     user(this.auth).subscribe(u => {

@@ -1,4 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { FirestoreService } from '../../core/services/firestore.service';
 import { UserProfile } from '../../core/models/user.model';
@@ -63,6 +64,11 @@ import { UserProfile } from '../../core/models/user.model';
       </div>
 
       <div class="actions-section">
+        @if (auth.isAdmin()) {
+          <button class="btn-admin" (click)="router.navigate(['/admin'])">
+            ⚡ Painel Admin
+          </button>
+        }
         <button class="btn-signout" (click)="auth.signOut()">
           Sair da conta
         </button>
@@ -222,7 +228,21 @@ import { UserProfile } from '../../core/models/user.model';
     }
 
     /* Actions */
-    .actions-section { margin-top: auto; padding-top: var(--space-sm); }
+    .actions-section { margin-top: auto; padding-top: var(--space-sm); display: flex; flex-direction: column; gap: var(--space-sm); }
+    .btn-admin {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 2px dashed #F59E0B;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-out);
+    }
+    .btn-admin:active { transform: scale(0.97); }
     .btn-signout {
       width: 100%;
       padding: 14px;
@@ -241,6 +261,7 @@ import { UserProfile } from '../../core/models/user.model';
 })
 export class PerfilComponent implements OnInit {
   auth = inject(AuthService);
+  router = inject(Router);
   private db = inject(FirestoreService);
 
   readonly profile = signal<UserProfile | null>(null);

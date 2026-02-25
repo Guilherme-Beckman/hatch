@@ -26,6 +26,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/perfil/perfil.component').then(m => m.PerfilComponent),
     canActivate: [authGuard],
   },
+  {
+    path: 'admin',
+    loadComponent: () => import('./features/admin/admin-panel.component').then(m => m.AdminPanelComponent),
+    canActivate: [authGuard],
+  },
   { path: '', redirectTo: '/timer', pathMatch: 'full' },
   { path: '**', redirectTo: '/timer' },
 ];
