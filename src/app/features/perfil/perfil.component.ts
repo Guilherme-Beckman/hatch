@@ -10,11 +10,14 @@ import { UserProfile } from '../../core/models/user.model';
     <div class="perfil-screen">
       <header class="perfil-header">
         @if (auth.currentUser(); as user) {
-          <img
-            class="avatar"
-            [src]="user.photoURL || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'U')"
-            [alt]="user.displayName || 'Usuário'"
-          />
+          <div class="avatar-wrapper">
+            <img
+              class="avatar"
+              [src]="user.photoURL || 'https://ui-avatars.com/api/?name=' + (user.displayName || 'U')"
+              [alt]="user.displayName || 'Usuário'"
+            />
+            <div class="avatar-ring"></div>
+          </div>
           <h2 class="user-name">{{ user.displayName }}</h2>
           <p class="user-email">{{ user.email }}</p>
         }
@@ -23,10 +26,12 @@ import { UserProfile } from '../../core/models/user.model';
       @if (profile()) {
         <div class="stats-grid">
           <div class="stat-card">
+            <span class="stat-icon">⏱️</span>
             <span class="stat-value">{{ formatHours(profile()!.totalFocusMinutes) }}</span>
             <span class="stat-label">horas focadas</span>
           </div>
           <div class="stat-card">
+            <span class="stat-icon">🔥</span>
             <span class="stat-value">{{ profile()!.totalSessions }}</span>
             <span class="stat-label">sessões completas</span>
           </div>
@@ -36,9 +41,15 @@ import { UserProfile } from '../../core/models/user.model';
       <div class="achievements-section">
         <h3 class="section-label">Conquistas</h3>
         <div class="achievements-list">
-          @for (a of achievements(); track a.id) {
-            <div class="achievement-item" [class.earned]="a.earned">
-              <span class="achievement-icon">{{ a.icon }}</span>
+          @for (a of achievements(); track a.id; let i = $index) {
+            <div
+              class="achievement-item"
+              [class.earned]="a.earned"
+              [style.animation-delay]="i * 50 + 'ms'"
+            >
+              <div class="achievement-icon-wrapper" [class.glow]="a.earned">
+                <span class="achievement-icon">{{ a.icon }}</span>
+              </div>
               <div class="achievement-info">
                 <span class="achievement-name">{{ a.name }}</span>
                 <span class="achievement-desc">{{ a.description }}</span>
@@ -60,73 +71,172 @@ import { UserProfile } from '../../core/models/user.model';
   `,
   styles: [`
     .perfil-screen {
-      padding: 24px 20px;
+      padding: var(--space-lg) 20px;
       min-height: 100dvh;
       background: var(--bg);
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: var(--space-lg);
+      animation: fadeInUp 0.4s var(--ease-out) both;
     }
+
+    /* Header */
     .perfil-header {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      padding: 16px 0;
+      gap: var(--space-sm);
+      padding: var(--space-md) 0;
+    }
+    .avatar-wrapper {
+      position: relative;
+      width: 88px;
+      height: 88px;
     }
     .avatar {
-      width: 80px; height: 80px;
+      width: 88px; height: 88px;
       border-radius: 50%;
-      border: 3px solid var(--primary);
       object-fit: cover;
+      position: relative;
+      z-index: 1;
+      box-shadow: var(--shadow-md);
     }
-    .user-name { font-size: 20px; font-weight: 800; color: var(--text); margin: 0; }
-    .user-email { font-size: 13px; color: var(--text-muted); margin: 0; }
+    .avatar-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      z-index: 0;
+      animation: spin 6s linear infinite;
+    }
+    .user-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+    .user-email {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0;
+      font-weight: 600;
+    }
 
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
     .stat-card {
       background: var(--surface);
-      border-radius: 16px;
-      padding: 20px 16px;
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg) var(--space-md);
       text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      gap: var(--space-xs);
+      box-shadow: var(--shadow-sm);
     }
-    .stat-value { font-size: 32px; font-weight: 800; color: var(--primary); }
-    .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .stat-icon { font-size: 28px; }
+    .stat-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-    .section-label { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 12px; }
-    .achievements-list { display: flex; flex-direction: column; gap: 8px; }
+    /* Achievements */
+    .section-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 var(--space-sm);
+    }
+    .achievements-list { display: flex; flex-direction: column; gap: var(--space-sm); }
     .achievement-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--space-sm);
       background: var(--surface);
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
       opacity: 0.4;
-      transition: opacity 0.2s;
+      transition: all 0.3s var(--ease-out);
+      box-shadow: var(--shadow-sm);
+      animation: fadeInUp 0.4s var(--ease-out) both;
     }
-    .achievement-item.earned { opacity: 1; }
-    .achievement-icon { font-size: 28px; flex-shrink: 0; }
+    .achievement-item.earned {
+      opacity: 1;
+      box-shadow: var(--shadow-md);
+    }
+    .achievement-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: all 0.3s var(--ease-out);
+    }
+    .achievement-icon-wrapper.glow {
+      animation: glow 3s ease-in-out infinite;
+    }
+    .achievement-icon { font-size: 24px; }
     .achievement-info { flex: 1; }
-    .achievement-name { display: block; font-size: 14px; font-weight: 700; color: var(--text); }
-    .achievement-desc { display: block; font-size: 12px; color: var(--text-muted); }
-    .achievement-check { color: #22c55e; font-size: 18px; font-weight: bold; }
+    .achievement-name {
+      display: block;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .achievement-desc {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .achievement-check {
+      color: var(--primary);
+      font-size: 20px;
+      font-weight: bold;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-light);
+      border-radius: 50%;
+    }
 
-    .actions-section { margin-top: auto; padding-top: 8px; }
+    /* Actions */
+    .actions-section { margin-top: auto; padding-top: var(--space-sm); }
     .btn-signout {
       width: 100%;
       padding: 14px;
-      border-radius: 14px;
+      border-radius: var(--radius-md);
       border: 2px solid var(--border);
       background: transparent;
       color: var(--text-muted);
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
+      transition: all 0.2s var(--ease-out);
     }
+    .btn-signout:active { transform: scale(0.97); background: var(--surface); }
   `],
 })
 export class PerfilComponent implements OnInit {
