@@ -67,7 +67,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'semente',
     description: 'The most recognizable bird in Brazil, famous for its distinctive call.',
     habitat: 'Fields and gardens',
-    stages: { filhote: 'assets/birds/bem-te-vi/filhote.svg', jovem: 'assets/birds/bem-te-vi/jovem.svg', adulto: 'assets/birds/bem-te-vi/adulto.svg' },
+    stages: { filhote: 'assets/birds/bem-te-vi/filhote.png', jovem: 'assets/birds/bem-te-vi/jovem.png', adulto: 'assets/birds/bem-te-vi/adulto.png' },
   },
   {
     id: 'pintassilgo',
@@ -77,7 +77,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'semente',
     description: 'A small, colorful bird with a melodious song.',
     habitat: 'Forest edges',
-    stages: { filhote: 'assets/birds/pintassilgo/filhote.svg', jovem: 'assets/birds/pintassilgo/jovem.svg', adulto: 'assets/birds/pintassilgo/adulto.svg' },
+    stages: { filhote: 'assets/birds/pintassilgo/filhote.png', jovem: 'assets/birds/pintassilgo/jovem.png', adulto: 'assets/birds/pintassilgo/adulto.png' },
   },
   {
     id: 'beija-flor',
@@ -87,7 +87,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'semente',
     description: 'Tiny and incredibly fast, a symbol of lightness and joy.',
     habitat: 'Forests and flower gardens',
-    stages: { filhote: 'assets/birds/beija-flor/filhote.svg', jovem: 'assets/birds/beija-flor/jovem.svg', adulto: 'assets/birds/beija-flor/adulto.svg' },
+    stages: { filhote: 'assets/birds/beija-flor/filhote.png', jovem: 'assets/birds/beija-flor/jovem.png', adulto: 'assets/birds/beija-flor/adulto.png' },
   },
   {
     id: 'uirapuru',
@@ -97,7 +97,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'semente',
     description: 'The legendary bird whose song is said to bring luck and love to those who hear it.',
     habitat: 'Amazon Rainforest',
-    stages: { filhote: 'assets/birds/uirapuru/filhote.svg', jovem: 'assets/birds/uirapuru/jovem.svg', adulto: 'assets/birds/uirapuru/adulto.svg' },
+    stages: { filhote: 'assets/birds/uirapuru/filhote.png', jovem: 'assets/birds/uirapuru/jovem.png', adulto: 'assets/birds/uirapuru/adulto.png' },
   },
   // Fruta birds
   {
@@ -108,7 +108,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'fruta',
     description: "Brazil's national bird, its song announces the morning in cities.",
     habitat: 'Woods and urban gardens',
-    stages: { filhote: 'assets/birds/sabia/filhote.svg', jovem: 'assets/birds/sabia/jovem.svg', adulto: 'assets/birds/sabia/adulto.svg' },
+    stages: { filhote: 'assets/birds/sabia/filhote.png', jovem: 'assets/birds/sabia/jovem.png', adulto: 'assets/birds/sabia/adulto.png' },
   },
   {
     id: 'tucano',
@@ -118,7 +118,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'fruta',
     description: 'Icon of the Atlantic Forest, with its enormous colorful bill.',
     habitat: 'Atlantic Forest',
-    stages: { filhote: 'assets/birds/tucano/filhote.svg', jovem: 'assets/birds/tucano/jovem.svg', adulto: 'assets/birds/tucano/adulto.svg' },
+    stages: { filhote: 'assets/birds/tucano/filhote.png', jovem: 'assets/birds/tucano/jovem.png', adulto: 'assets/birds/tucano/adulto.png' },
   },
   {
     id: 'arara-azul',
@@ -128,7 +128,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'fruta',
     description: 'The largest macaw in the world, in a stunning blue, threatened with extinction.',
     habitat: 'Pantanal and Cerrado',
-    stages: { filhote: 'assets/birds/arara-azul/filhote.svg', jovem: 'assets/birds/arara-azul/jovem.svg', adulto: 'assets/birds/arara-azul/adulto.svg' },
+    stages: { filhote: 'assets/birds/arara-azul/filhote.png', jovem: 'assets/birds/arara-azul/jovem.png', adulto: 'assets/birds/arara-azul/adulto.png' },
   },
   {
     id: 'harpia',
@@ -138,7 +138,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'fruta',
     description: 'The most powerful eagle of the Americas, a symbol of strength and majesty.',
     habitat: 'Amazon Rainforest',
-    stages: { filhote: 'assets/birds/harpia/filhote.svg', jovem: 'assets/birds/harpia/jovem.svg', adulto: 'assets/birds/harpia/adulto.svg' },
+    stages: { filhote: 'assets/birds/harpia/filhote.png', jovem: 'assets/birds/harpia/jovem.png', adulto: 'assets/birds/harpia/adulto.png' },
   },
   // Biscoito birds
   {
@@ -149,7 +149,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'biscoito',
     description: 'Small and lively, lives in noisy flocks in cities.',
     habitat: 'Urban areas and cerrado',
-    stages: { filhote: 'assets/birds/periquito/filhote.svg', jovem: 'assets/birds/periquito/jovem.svg', adulto: 'assets/birds/periquito/adulto.svg' },
+    stages: { filhote: 'assets/birds/periquito/filhote.png', jovem: 'assets/birds/periquito/jovem.png', adulto: 'assets/birds/periquito/adulto.png' },
   },
   {
     id: 'papagaio',
@@ -159,7 +159,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'biscoito',
     description: 'Famous for its ability to mimic sounds and human voices.',
     habitat: 'Tropical forests',
-    stages: { filhote: 'assets/birds/papagaio/filhote.svg', jovem: 'assets/birds/papagaio/jovem.svg', adulto: 'assets/birds/papagaio/adulto.svg' },
+    stages: { filhote: 'assets/birds/papagaio/filhote.png', jovem: 'assets/birds/papagaio/jovem.png', adulto: 'assets/birds/papagaio/adulto.png' },
   },
   {
     id: 'cacatua',
@@ -169,7 +169,7 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'biscoito',
     description: 'An exotic bird with an impressive crest, extremely intelligent.',
     habitat: 'Tropical regions',
-    stages: { filhote: 'assets/birds/cacatua/filhote.svg', jovem: 'assets/birds/cacatua/jovem.svg', adulto: 'assets/birds/cacatua/adulto.svg' },
+    stages: { filhote: 'assets/birds/cacatua/filhote.png', jovem: 'assets/birds/cacatua/jovem.png', adulto: 'assets/birds/cacatua/adulto.png' },
   },
   {
     id: 'ararinha-azul',
@@ -179,6 +179,6 @@ export const BIRDS: Bird[] = [
     foodAffinity: 'biscoito',
     description: 'Extinct in the wild and a symbol of Brazilian conservation. Finding one is a miracle.',
     habitat: 'Caatinga (extinct in the wild)',
-    stages: { filhote: 'assets/birds/ararinha-azul/filhote.svg', jovem: 'assets/birds/ararinha-azul/jovem.svg', adulto: 'assets/birds/ararinha-azul/adulto.svg' },
+    stages: { filhote: 'assets/birds/ararinha-azul/filhote.png', jovem: 'assets/birds/ararinha-azul/jovem.png', adulto: 'assets/birds/ararinha-azul/adulto.png' },
   },
 ];
